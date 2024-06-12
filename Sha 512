@@ -1,0 +1,13 @@
+import hashlib
+def calculate_sha512_digest(text):
+    # Encode the text as bytes before hashing
+    encoded_text = text.encode('utf-8')
+
+    # Calculate the SHA-512 digest
+    sha512_digest = hashlib.sha512(encoded_text).hexdigest()
+
+    return sha512_digest
+# Example usage:
+text = "This is a sample text for calculating SHA-512 digest."
+sha512_digest = calculate_sha512_digest(text)
+print("SHA-512 Digest:", sha512_digest)

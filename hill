@@ -1,0 +1,37 @@
+import numpy as np
+
+pt = input('Enter plain text: ') 
+key = input('Enter key: ') 
+
+# Padding the plain text if its length is not divisible by 3 
+if len(pt) % 3 != 0: 
+    for i in range(3 - (len(pt) % 3)): 
+        pt += 'x' 
+
+# Creating a matrix for the key 
+matrix_key = [] 
+for i in range(3): 
+    row = [] 
+    for j in range(3): 
+        row.append(ord(key[i * 3 + j]) - 65) 
+    matrix_key.append(row)
+
+# Converting plain text into matrix form
+p_m = [] 
+for i in range(0, len(pt), 3): 
+    row = [] 
+    for j in range(3): 
+        row.append(ord(pt[i + j]) - 65) 
+    p_m.append(row)
+
+# Performing matrix multiplication to get the cipher text 
+cipher_text = "" 
+for i in range(len(p_m)):  
+    m1 = np.array(matrix_key) 
+    m2 = np.array(p_m[i]).reshape(-1, 1) 
+    c = np.dot(m1, m2) % 26  # Perform modulo 26 arithmetic for each element
+    c = c.flatten() + 65     # Convert back to ASCII values
+    for j in range(len(c)): 
+        cipher_text += chr(c[j]) 
+
+print("Cipher Text:", cipher_text)

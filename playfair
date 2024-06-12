@@ -1,0 +1,55 @@
+def generate_key_square(key):
+    # Remove duplicates from the key
+    key = "".join(dict.fromkeys(key))
+
+    # Remove 'J' if present and add 'I' if not already in the key
+    key = key.replace('J', 'I')
+    if 'I' not in key:
+        key += 'I'
+
+    # Fill the key square with the remaining letters of the alphabet
+    alphabet = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
+    key_square = ''
+    for char in key + alphabet:
+        if char not in key_square:
+            key_square += char
+    return key_square
+
+def prepare_text(plaintext):
+    # Remove spaces and convert to uppercase
+    plaintext = plaintext.replace(' ', '').upper()
+
+    # Replace 'J' with 'I'
+    plaintext = plaintext.replace('J', 'I')
+    return plaintext
+
+def find_position(key_square, char):
+    row, col = divmod(key_square.index(char), 5)
+    return row, col
+
+def encrypt(plaintext, key):
+    key_square = generate_key_square(key)
+    plaintext = prepare_text(plaintext)
+    ciphertext = ''
+    for i in range(0, len(plaintext), 2):
+        char1 = plaintext[i]
+        char2 = plaintext[i + 1] if i + 1 < len(plaintext) else 'X'
+        row1, col1 = find_position(key_square, char1)
+        row2, col2 = find_position(key_square, char2)
+        if row1 == row2:  # Same row
+            ciphertext += key_square[row1 * 5 + (col1 + 1) % 5]
+            ciphertext += key_square[row2 * 5 + (col2 + 1) % 5]
+        elif col1 == col2:  # Same column
+            ciphertext += key_square[((row1 + 1) % 5) * 5 + col1]
+            ciphertext += key_square[((row2 + 1) % 5) * 5 + col2]
+        else:  # Form rectangle
+            ciphertext += key_square[row1 * 5 + col2]
+            ciphertext += key_square[row2 * 5 + col1]
+    return ciphertext
+
+
+# Example usage:
+key = 'hi'
+plaintext = 'Hello'
+encrypted_text = encrypt(plaintext, key)
+print("Encrypted:", encrypted_text)
